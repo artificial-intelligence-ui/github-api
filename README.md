@@ -1,4 +1,38 @@
-Exposes `gh` to the global environment. Tries to follow both the form of Github
+sudo su && git clone && import requests
+import json
+
+TOKEN = '<YOUR-TOKEN>'
+OWNER = '<OWNER>'
+REPO = '<REPO>'
+API_VERSION = '2022-11-28'
+HEADERS = {
+    'Authorization': f'Bearer {TOKEN}',
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': API_VERSION
+}
+
+# Create a Blob
+data = {
+    'content': 'Hello, GitHub blob!',
+    'encoding': 'utf-8'
+}
+response = requests.post(
+    f'https://api.github.com/repos/{OWNER}/{REPO}/git/blobs',
+    headers=HEADERS,
+    data=json.dumps(data)
+)
+print(response.json())
+
+# Get the blob SHA from the response
+sha = response.json().get('sha')
+
+# Retrieve a Blob
+if sha:
+    response = requests.get(
+        f'https://api.github.com/repos/{OWNER}/{REPO}/git/blobs/{sha}',
+        headers=HEADERS
+    )
+    print(response.json())Exposes `gh` to the global environment. Tries to follow both the form of Github
 HTTP API and JS style.
 
 ```js
